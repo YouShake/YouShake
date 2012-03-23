@@ -57,7 +57,7 @@
 							<maxIdleTime>60000</maxIdleTime>
 						</connector>
 					</connectors>
-					<webApp>${basedir}/target/jersey-demo</webApp>
+					<webApp>${basedir}/target/youshake</webApp>
 					<requestLog implementation="org.mortbay.jetty.NCSARequestLog">
 						<filename>target/yyyy_mm_dd.request.log</filename>
 						<retainDays>90</retainDays>
