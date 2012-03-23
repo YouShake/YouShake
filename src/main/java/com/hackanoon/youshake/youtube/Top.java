@@ -58,10 +58,6 @@ public class Top {
 		return getRSSUrls(YOUTUBE_BASE_URL + "most_responded");
 	}
 
-	public static String[] getMostFeatured() {
-		return getRSSUrls(YOUTUBE_BASE_URL + "most_featured");
-	}
-
 	public static String[] getRecentlyFeatured() {
 		return getRSSUrls(YOUTUBE_BASE_URL + "recently_featured");
 	}
@@ -82,7 +78,7 @@ public class Top {
 			round++;
 			double d = rnd.nextDouble();
 			if (d < 0.1) {
-				int c = (int)Math.min(d * 80, 7);
+				int c = (int)Math.min(d * 70, 6);
 				String url = null;
 				switch(c) {
 				case 0: url = fromArray(getTopRated(), rnd, result); break;
@@ -92,7 +88,6 @@ public class Top {
 				case 4: url = fromArray(getMostPopular(), rnd, result); break;
 				case 5: url = fromArray(getMostDiscussed(), rnd, result); break;
 				case 6: url = fromArray(getMostResponded(), rnd, result); break;
-				case 7: url = fromArray(getMostFeatured(), rnd, result); break;
 				}
 				if (url != null) {
 					result[i++] = url;
@@ -100,7 +95,7 @@ public class Top {
 				continue;
 			}
 			if (d < 0.2) {
-				String url = fromArray(getMostFeatured(), rnd, result);
+				String url = fromArray(getRecentlyFeatured(), rnd, result);
 				if (url != null) {
 					result[i++] = url;
 				}
