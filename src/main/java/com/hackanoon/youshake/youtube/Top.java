@@ -30,8 +30,8 @@ public class Top {
 		return getRSSUrls(YOUTUBE_BASE_URL + "top_rated");
 	}
 
-	public static String[] getTopFavorite() {
-		return getRSSUrls(YOUTUBE_BASE_URL + "top_favorite");
+	public static String[] getTopFavorites() {
+		return getRSSUrls(YOUTUBE_BASE_URL + "top_favorites");
 	}
 
 	public static String[] getMostViewed() {
@@ -71,8 +71,8 @@ public class Top {
 	}
 
 	public static String[] mix(int count) {
-		if (count > 250) {
-			count = 250;
+		if (count > 100) {
+			count = 100;
 		}
 		Random rnd = new Random();
 		String[] result = new String[count];
@@ -86,7 +86,7 @@ public class Top {
 				String url = null;
 				switch(c) {
 				case 0: url = fromArray(getTopRated(), rnd, result); break;
-				case 1: url = fromArray(getTopFavorite(), rnd, result); break;
+				case 1: url = fromArray(getTopFavorites(), rnd, result); break;
 				case 2: url = fromArray(getMostViewed(), rnd, result); break;
 				case 3: url = fromArray(getMostShared(), rnd, result); break;
 				case 4: url = fromArray(getMostPopular(), rnd, result); break;
