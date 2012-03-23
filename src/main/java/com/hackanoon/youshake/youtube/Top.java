@@ -1,9 +1,9 @@
 package com.hackanoon.youshake.youtube;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -70,7 +70,88 @@ public class Top {
 		return getRSSUrls(YOUTUBE_BASE_URL + "on_the_web");
 	}
 
+	public static String[] mix(int count) {
+		if (count > 250) {
+			count = 250;
+		}
+		Random rnd = new Random();
+		String[] result = new String[count];
+		int i = 0;
+		int round = 0;
+		while (i < count && round < count * 3) {
+			round++;
+			double d = rnd.nextDouble();
+			if (d < 0.1) {
+				int c = (int)Math.min(d * 80, 7);
+				String url = null;
+				switch(c) {
+				case 0: url = fromArray(getTopRated(), rnd, result); break;
+				case 1: url = fromArray(getTopFavorite(), rnd, result); break;
+				case 2: url = fromArray(getMostViewed(), rnd, result); break;
+				case 3: url = fromArray(getMostShared(), rnd, result); break;
+				case 4: url = fromArray(getMostPopular(), rnd, result); break;
+				case 5: url = fromArray(getMostDiscussed(), rnd, result); break;
+				case 6: url = fromArray(getMostResponded(), rnd, result); break;
+				case 7: url = fromArray(getMostFeatured(), rnd, result); break;
+				}
+				if (url != null) {
+					result[i++] = url;
+				}
+				continue;
+			}
+			if (d < 0.2) {
+				String url = fromArray(getMostFeatured(), rnd, result);
+				if (url != null) {
+					result[i++] = url;
+				}
+				continue;
+			}
+			String url = null;
+			if (rnd.nextBoolean()) {
+				url = fromArray(getMostRecent(), rnd, result);
+			} else {
+				url = fromArray(getOnTheWeb(), rnd, result);
+			}
+			if (url != null) {
+				result[i++] = url;
+			}
+		}
+		ArrayList<String> res = new ArrayList<String>();
+		for (String s: result) {
+			if (s != null) {
+				res.add(s);
+			}
+		}
+		return res.toArray(new String[res.size()]);
+	}
+
+	private static String fromArray(String src[], Random rnd, String[] blacklist) {
+		if (src.length == 0) {
+			return null;
+		}
+		String url = src[rnd.nextInt(src.length)];
+		for (String entry: blacklist) {
+			if (entry != null && entry.equals(url)) {
+				return null;
+			}
+		}
+		return url;
+	}
+
+	private static class TEntry {
+		public String[] result;
+		public long time = System.currentTimeMillis();
+	}
+
+	private static HashMap<String, TEntry> CALL_CACHE =
+			new HashMap<String, Top.TEntry>();
+
 	private final static String[] getRSSUrls(String url) {
+		long time = System.currentTimeMillis();
+		TEntry cached = CALL_CACHE.get(url);
+		if (cached != null && time - cached.time < 30 * 60 * 1000) {
+			return cached.result;
+		}
 		ArrayList<String> result = new ArrayList<String>();
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -104,7 +185,10 @@ public class Top {
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		return result.toArray(new String[result.size()]);
+		cached = new TEntry();
+		cached.result = result.toArray(new String[result.size()]);
+		CALL_CACHE.put(url, cached);
+		return cached.result;
 	}
 
 }

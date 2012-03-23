@@ -4,20 +4,21 @@ import java.util.Arrays;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.codehaus.jettison.json.JSONArray;
 
 import com.hackanoon.youshake.youtube.Top;
 
-@Path("/youtube")
+@Path("/video")
 public class YoutubeTest {
 
 	@GET
-	@Path("top")
+	@Path("random/{count}")
 	@Produces("application/json")
-	public JSONArray top() {
-		return new JSONArray(Arrays.asList(Top.getTopRated()));
+	public JSONArray mix(@PathParam("count") int count) {
+		return new JSONArray(Arrays.asList(Top.mix(count)));
 	}
 
 }
